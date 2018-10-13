@@ -20,8 +20,7 @@ export class InlineNotification extends React.Component {
     const {
       defaultMessage = "",
       hideAfter = 4000,
-      messageType = "",
-      showDismiss = true
+      messageType = ""
     } = this.props;
     const { notificationType = messageType } = triggerAction;
     if (show) {
@@ -33,15 +32,15 @@ export class InlineNotification extends React.Component {
           className={`notification alert alert-${notificationType ||
             "primary"}`}
         >
-          {notificationType !== "error" && (
-            <span className="notification-tick" />
-          )}
           {triggerAction.defaultMessage || defaultMessage}
-          {showDismiss && (
-            <span className="notification-dismiss" onClick={onHide}>
-              x
-            </span>
-          )}
+          <button
+            type="button"
+            class="close"
+            onClick={onHide}
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
       )
     );

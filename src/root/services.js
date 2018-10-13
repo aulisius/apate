@@ -1,6 +1,11 @@
 import api from "api";
 import storage from "storage";
 const credentials = [
+  {
+    username: "t@g.com",
+    password: "t",
+    fullname: "T"
+  },
   { username: "test@gmail.com", password: "qwedsa", fullname: "Test" },
   {
     username: "hello@apate.com",

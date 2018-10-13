@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Provider } from "react-redux";
 
-import Root from "./root/";
+import Home from "./home/index";
 
 export default class AppContainer extends React.Component {
   static propTypes = {
@@ -16,7 +16,7 @@ export default class AppContainer extends React.Component {
 
     return (
       <Provider store={store}>
-        <Root />
+        <Home />
       </Provider>
     );
   }

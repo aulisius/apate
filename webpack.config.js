@@ -13,13 +13,8 @@ module.exports = (env = { production: false }) => {
     disable: ifNotProduction()
   });
 
-  // NOTE: In development, we use an explicit public path when the assets
-  // are served webpack by to fix this issue:
-  // http://stackoverflow.com/questions/34133808/webpack-ots-parsing-error-loading-fonts/34133809#34133809
-  const publicPath = ifNotProduction(
-    `http://localhost:${process.env.npm_package_config_port}/`,
-    "/"
-  );
+  const publicPath = "/";
+  // ifNotProduction(`http://0.0.0.0:3000/`, "/");
 
   return {
     context: project.src(),
@@ -36,7 +31,7 @@ module.exports = (env = { production: false }) => {
       path: project.dist("output"),
       publicPath
     },
-    devtool: ifNotProduction("eval-source-map", false),
+    devtool: ifNotProduction("source-map", false),
     resolve: {
       alias: {
         constants: project.src("constants")
@@ -110,8 +105,7 @@ module.exports = (env = { production: false }) => {
       new webpack.DefinePlugin({
         "process.env": {
           NODE_ENV: JSON.stringify(ifProduction("production", "development"))
-        },
-        __HOST__: JSON.stringify("http://localhost:5000")
+        }
       }),
       new HtmlWebpackPlugin({
         template: project.public("index.html"),
@@ -135,6 +129,7 @@ module.exports = (env = { production: false }) => {
     ]),
     devServer: {
       port: 3000,
+      host: "0.0.0.0",
       compress: true,
       clientLogLevel: "error",
       overlay: true,
@@ -148,7 +143,7 @@ module.exports = (env = { production: false }) => {
       stats: "errors-only",
       proxy: {
         "/api": {
-          target: "http://localhost:5000",
+          target: "http://192.168.14.182:5000",
           pathRewrite: { "^/api": "" }
         }
       },

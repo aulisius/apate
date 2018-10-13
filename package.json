@@ -9,9 +9,6 @@
     "npm": ">=5.0.0"
   },
   "private": true,
-  "config": {
-    "port": 3000
-  },
   "scripts": {
     "dev": "webpack-dev-server --hot --hot-only --inline",
     "production": "webpack -p --env.production",
@@ -29,11 +26,12 @@
   "dependencies": {
     "@faizaanceg/redux-side-effect": "^0.5.0",
     "@faizaanceg/snitch": "^0.1.0",
+    "@reach/router": "^1.2.1",
     "classnames": "^2.2.5",
     "date-fns": "^1.29.0",
     "formik": "^0.9.4",
     "loaders.css": "^0.1.2",
-    "lodash": "4.17.4",
+    "lodash": "4.17.11",
     "normalize.css": "^5.0.0",
     "prop-types": "15.6.0",
     "react": "16.2.0",
@@ -45,7 +43,9 @@
     "react-redux": "^5.0.1",
     "redux": "^3.6.0",
     "redux-logger": "^3.0.6",
-    "redux-saga": "^0.16.2"
+    "redux-saga": "^0.16.2",
+    "youtube-embed-video": "^1.1.0",
+    "youtube-player": "^5.5.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",

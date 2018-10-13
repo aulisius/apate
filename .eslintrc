@@ -7,10 +7,6 @@
     "node": true,
     "es6": true
   },
-  "globals": {
-    "__PROD__": false,
-    "__HOST__": false
-  },
   "rules": {
     "prettier/prettier": "error",
     "no-var": "warn",

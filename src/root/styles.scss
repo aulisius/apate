@@ -176,7 +176,7 @@ h4 {
 }
 
 .main {
-  background: white;
+  background: #f4f5fc;
 }
 
 .main header {
@@ -266,4 +266,10 @@ h4 {
   box-shadow: 0 0 4px 0 #7c818b;
   padding: 8px 10px 8px 10px;
   transform: translateX(50%);
+}
+
+.play-marker {
+  &:hover {
+    color: #4c6ef5;
+  }
 }
