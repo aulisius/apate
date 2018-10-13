@@ -1,0 +1,91 @@
+{
+  "name": "apate",
+  "version": "1.0.0",
+  "description": "apate 2017",
+  "author": "",
+  "main": "src/main.js",
+  "engines": {
+    "node": ">=6.2.0",
+    "npm": ">=5.0.0"
+  },
+  "private": true,
+  "config": {
+    "port": 3000
+  },
+  "scripts": {
+    "dev": "webpack-dev-server --hot --hot-only --inline",
+    "production": "webpack -p --env.production",
+    "prettier-code": "lint-staged",
+    "lint": "eslint src",
+    "lint:fix": "npm run lint -- --fix",
+    "start": "npm run dev"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "@faizaanceg/redux-side-effect": "^0.5.0",
+    "@faizaanceg/snitch": "^0.1.0",
+    "classnames": "^2.2.5",
+    "date-fns": "^1.29.0",
+    "formik": "^0.9.4",
+    "loaders.css": "^0.1.2",
+    "lodash": "4.17.4",
+    "normalize.css": "^5.0.0",
+    "prop-types": "15.6.0",
+    "react": "16.2.0",
+    "react-bootstrap": "^0.31.3",
+    "react-copy-to-clipboard": "^5.0.0",
+    "react-csv": "^1.0.8",
+    "react-dom": "16.2.0",
+    "react-loaders": "^3.0.1",
+    "react-redux": "^5.0.1",
+    "redux": "^3.6.0",
+    "redux-logger": "^3.0.6",
+    "redux-saga": "^0.16.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-transform-react-jsx-self": "^7.0.0",
+    "@babel/plugin-transform-react-jsx-source": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^7.1.0",
+    "babel-loader": "^8.0.0",
+    "babel-plugin-lodash": "^3.2.11",
+    "clean-webpack-plugin": "^0.1.17",
+    "css-loader": "^0.28.0",
+    "cssnano": "^3.10.0",
+    "eslint": "^4.5.0",
+    "eslint-config-prettier": "^2.3.0",
+    "eslint-config-react-app": "^2.0.0",
+    "eslint-plugin-babel": "^4.0.0",
+    "eslint-plugin-flowtype": "^2.35.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "5.1.1",
+    "eslint-plugin-prettier": "^2.2.0",
+    "eslint-plugin-promise": "^3.0.0",
+    "eslint-plugin-react": "^7.3.0",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "file-loader": "^0.11.0",
+    "html-webpack-plugin": "^2.22.0",
+    "node-sass": "^4.5.3",
+    "postcss-loader": "^2.0.6",
+    "prettier": "^1.6.0",
+    "redbox-react": "^1.2.10",
+    "sass-loader": "^6.0.0",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.6",
+    "webpack": "^3.5.5",
+    "webpack-config-utils": "^2.3.0",
+    "webpack-dev-server": "^2.5.1"
+  }
+}

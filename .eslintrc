@@ -1,0 +1,19 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["prettier", "prettier/react", "react-app"],
+  "plugins": ["prettier"],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "globals": {
+    "__PROD__": false,
+    "__HOST__": false
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "no-var": "warn",
+    "no-restricted-globals": "warn"
+  }
+}

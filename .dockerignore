@@ -1,0 +1,8 @@
+*
+!.babelrc
+!src
+!public
+!webpack
+!package.json
+!webpack.config.js
+!nginx.conf
