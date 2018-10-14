@@ -158,7 +158,7 @@ export class Video extends React.Component {
   };
 
   getDataPoints = captions => {
-    let allCaptions = captions.length;
+    let allCaptions = captions.length / 5;
     let markedCaptions = captions.filter(caption => caption.claims.length > 0);
     let none = allCaptions - markedCaptions.length;
     let totalClaims = allCaptions - markedCaptions.length;
@@ -325,15 +325,20 @@ export class Video extends React.Component {
                                         >
                                           <Popover
                                             isOpen={state.showClaims}
+                                            refreshIntervalMs={false}
                                             place="below"
                                             onOuterAction={_ =>
                                               setState({
                                                 showClaims: false
                                               })
                                             }
+                                            style={{
+                                              width: "500px",
+                                              height: "500px"
+                                            }}
                                             body={
                                               <div
-                                                stye={{
+                                                style={{
                                                   display: "flex",
                                                   flex: "row wrap",
                                                   border: "1px solid",
@@ -347,18 +352,17 @@ export class Video extends React.Component {
                                                   >
                                                     <div class="card-body">
                                                       <h5 class="card-title">
-                                                        Motion:{" "}
                                                         {
                                                           this.motionMapping[
                                                             claim.motion
                                                           ]
                                                         }
                                                       </h5>
-                                                      <h6 class="card-subtitle mb-2 text-muted">
+                                                      {/* <h6 class="card-subtitle mb-2 text-muted">
                                                         {
                                                           claim.claimCreatorUserName
                                                         }
-                                                      </h6>
+                                                      </h6> */}
                                                       <p className="card-text">
                                                         {claim.comment}
                                                       </p>
