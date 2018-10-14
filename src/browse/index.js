@@ -52,17 +52,14 @@ export class BrowseVideos extends React.Component {
                     )}/hqdefault.jpg`}
                   />
                   <div className="card-body">
-                    <h5 className="card-title">
-                      {this.sanitizeName(_.name, _.url)}
-                    </h5>
-                    <p className="card-text">
-                      <Link
-                        to={`/watch/${this.getVideoId(_.url)}`}
-                        className="text-muted"
-                      >
-                        Watch now!
-                      </Link>
-                    </p>
+                    <Link
+                      to={`/watch/${this.getVideoId(_.url)}`}
+                      className="text-muted"
+                    >
+                      <h5 className="text-dark card-title">
+                        {this.sanitizeName(_.name, _.url)}
+                      </h5>
+                    </Link>
                   </div>
                 </div>
               ))}

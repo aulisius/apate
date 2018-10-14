@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Router } from "@reach/router";
+import { Router, Link } from "@reach/router";
 import { actions } from "../root/ducks";
 import { connect } from "react-redux";
 import { Video } from "../video";
@@ -22,7 +22,7 @@ class Home extends React.Component {
               <div className="row">
                 <div className="col-md-6">
                   <div className="logo">
-                    <a>APATE</a>
+                    <Link to="/browse">APATE</Link>
                   </div>
                 </div>
                 {!this.props.loggedIn && (

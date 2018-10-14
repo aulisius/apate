@@ -1,6 +1,6 @@
 import api from "api";
 import classnames from "classnames";
-import { get, inRange } from "lodash";
+import { get, last, inRange } from "lodash";
 import React, { Fragment } from "react";
 import Popover from "react-popover";
 import YouTubePlayer from "youtube-player";
@@ -23,7 +23,8 @@ export class Video extends React.Component {
 
   state = {
     activeIndex: 0,
-    captions: []
+    captions: [],
+    timelines: []
   };
 
   callbackid = null;
@@ -175,6 +176,25 @@ export class Video extends React.Component {
       y: (times / totalClaims) * 100
     }));
   };
+
+  constructTimeline() {
+    let totalTime = last(this.state.captions).endTime;
+    return this.state.captions.forEach((caption, index) => {
+      let scaledStartTime = (caption.startTime / totalTime) * 100;
+      let scaledEndTime = (caption.endTime / totalTime) * 100;
+      let percentageToPaint = scaledEndTime - scaledStartTime;
+      this.setState({
+        timelines: [
+          ...this.state.timelines,
+          {
+            key: caption.startIndex + "" + index,
+            percentageToPaint,
+            color: this.getColorFromClaims(caption.claims).bsClass
+          }
+        ]
+      });
+    });
+  }
 
   render() {
     return (
@@ -508,13 +528,27 @@ export class Video extends React.Component {
             </section>
           </div>
         </div>
-        {/* <div
-          className="d-flex p-0 w-75 mx-auto"
-          style={{ borderRadius: "2px", border: "1px solid", height: "15px" }}
+        {/* {<div
+          className="d-flex p-0 mx-auto"
+          style={{
+            width: "85%",
+            borderRadius: "2px",
+            border: "1px solid",
+            height: "15px"
+          }}
         >
-          <span style={{ width: "60%", backgroundColor: "#701516" }} />
-          <span style={{ width: "40%", backgroundColor: "#555555" }} />
-        </div> */}
+          {this.state.timelines.map(options => {
+            return (
+              <div
+                key={options.key}
+                className={`bg-${options.color}`}
+                style={{
+                  width: `${options.percentageToPaint}%`
+                }}
+              />
+            );
+          })}
+        </div>} */}
       </Fragment>
     );
   }
