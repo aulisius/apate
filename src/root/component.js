@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
 import { actions } from "./ducks";
+import api from "api";
 import "./styles.scss";
 // import { InlineNotification } from "./inline-notif";
 // import { onSuccess, onFailure } from "@faizaanceg/redux-side-effect";
@@ -142,7 +143,7 @@ class Root extends Component {
                 initialValues={{
                   videoUrl: ""
                 }}
-                onSubmit={values => {
+                onSubmit={async values => {
                   // this.props.postVideo(values.videoUrl)
                   let videoLink = new URL(values.videoUrl);
                   let videoId = null;
@@ -151,7 +152,13 @@ class Root extends Component {
                   } else {
                     videoId = videoLink.searchParams.get("v");
                   }
-                  this.props.navigate(`/browse/${videoId}`);
+                  try {
+                    await api.postBody("/api/video", {
+                      videoLink: values.videoUrl,
+                      userName: "t@g.com"
+                    });
+                    this.props.navigate(`/watch/${videoId}`);
+                  } catch (error) {}
                 }}
                 validate={values => {
                   let videoLink = new URL(values.videoUrl);
@@ -171,27 +178,30 @@ class Root extends Component {
                 }}
                 render={({ errors }) => {
                   return (
-                    <div className="w-50 mx-auto">
-                      <Form className="form-inline">
-                        <div className="form-group align-items-center">
-                          <Field
-                            type="url"
-                            id="url"
-                            name="videoUrl"
-                            placeholder="Enter Video URL"
-                            className="form-control mx-sm-3"
-                            aria-describedby="urlHelpInline"
-                          />
-                          {errors.videoUrl && (
-                            <small id="urlHelpInline" className="text-muted">
-                              Must be YouTube URL.
-                            </small>
-                          )}
+                    <div className="post-video">
+                      <div className="container">
+                        <div className="row">
+                          <div class="col-md-6 offset-md-3">
+                            <div class="search-box">
+                              <Form class="search-form">
+                                <Field
+                                  className="form-control"
+                                  type="url"
+                                  id="url"
+                                  name="videoUrl"
+                                  placeholder="Enter YouTube URL"
+                                />
+                                <button
+                                  type="submit"
+                                  className="btn btn-link search-btn"
+                                >
+                                  <i className="fab fa-youtube" />
+                                </button>
+                              </Form>
+                            </div>
+                          </div>
                         </div>
-                        <button type="submit" className="btn btn-primary my-1">
-                          Submit
-                        </button>
-                      </Form>
+                      </div>
                     </div>
                   );
                 }}

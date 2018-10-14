@@ -6,6 +6,7 @@ import { Video } from "../video";
 import Root from "../root/index";
 
 import { Formik, Form, Field } from "formik";
+import { BrowseVideos } from "../browse";
 
 // import { InlineNotification } from "./inline-notif";
 
@@ -106,7 +107,8 @@ class Home extends React.Component {
             </header>
             <Router>
               <Root path="/" loggedIn={this.props.loggedIn} />
-              <Video loggedIn={this.props.loggedIn} path="/browse/:videoId" />
+              <BrowseVideos path="/browse" />
+              <Video loggedIn={this.props.loggedIn} path="/watch/:videoId" />
             </Router>
           </div>
 
