@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Link, Router } from "@reach/router";
+import { Router } from "@reach/router";
 import { actions } from "../root/ducks";
 import { connect } from "react-redux";
 import { Video } from "../video";
@@ -7,10 +7,6 @@ import Root from "../root/index";
 
 import { Formik, Form, Field } from "formik";
 import { BrowseVideos } from "../browse";
-
-// import { InlineNotification } from "./inline-notif";
-
-// import { onSuccess, onFailure } from "@faizaanceg/redux-side-effect";
 
 class Home extends React.Component {
   static mapStateToProps = state => state.root;
@@ -89,7 +85,7 @@ class Home extends React.Component {
                     <div className="col offset-md-2 text-right">
                       <div className="logo">
                         <a className="mx-auto">
-                          {this.props.userInfo.username}
+                          {this.props.userInfo.fullname}
                         </a>
                       </div>
                     </div>
@@ -105,34 +101,18 @@ class Home extends React.Component {
                 )}
               </div>
             </header>
-            <Router>
-              <Root path="/" loggedIn={this.props.loggedIn} />
-              <BrowseVideos path="/browse" />
-              <Video loggedIn={this.props.loggedIn} path="/watch/:videoId" />
-            </Router>
-          </div>
-
-          <br />
-          <br />
-          <br />
-
-          <footer className="footer">
-            <div className="container">
-              <div className="row">
-                <div className="col-md">
-                  <span>
-                    ©<span className="pl-2">{new Date().getFullYear()}</span>
-                  </span>
-                </div>
-                <div className="col-md text-right designed">
-                  <span>
-                    Designed by
-                    <a className="pl-1">Apate</a>
-                  </span>
-                </div>
-              </div>
+            <div className="shadow p-3 mb-5 bg-white rounded">
+              <Router>
+                <Root path="/" loggedIn={this.props.loggedIn} />
+                <BrowseVideos path="/browse" />
+                <Video
+                  loggedIn={this.props.loggedIn}
+                  userName={this.props.userInfo.username}
+                  path="/watch/:videoId"
+                />
+              </Router>
             </div>
-          </footer>
+          </div>
         </div>
       </div>
     );

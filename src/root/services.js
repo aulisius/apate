@@ -1,17 +1,9 @@
 import api from "api";
 import storage from "storage";
 const credentials = [
-  {
-    username: "t@g.com",
-    password: "t",
-    fullname: "T"
-  },
+  { username: "t@g.com", password: "t", fullname: "T" },
   { username: "test@gmail.com", password: "qwedsa", fullname: "Test" },
-  {
-    username: "hello@apate.com",
-    password: "qwedsa",
-    fullname: "apate"
-  }
+  { username: "hello@apate.com", password: "qwedsa", fullname: "apate" }
 ];
 
 storage.set("users", credentials);
@@ -26,9 +18,7 @@ export const services = {
           value.username === user.username && value.password === user.password
       );
     return authorizedUser
-      ? Promise.resolve({
-          username: authorizedUser.fullname
-        })
+      ? Promise.resolve(authorizedUser)
       : Promise.reject("Unauthorized");
   },
   doSignup(user) {

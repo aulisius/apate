@@ -2,9 +2,9 @@ import api from "api";
 import classnames from "classnames";
 import { get, inRange } from "lodash";
 import React, { Fragment } from "react";
+import Popover from "react-popover";
 import YouTubePlayer from "youtube-player";
 import { Claim } from "../claim";
-import { colors } from "../color";
 import { State } from "../state";
 import TabSwitcher from "../tab-switcher";
 import { CanvasJSChart } from "./canvasjs.react";
@@ -100,20 +100,34 @@ export class Video extends React.Component {
       });
       if (activeIndex > 0) {
         this.captionRefs[activeIndex] &&
-          this.captionRefs[activeIndex].scrollIntoView(true);
+          this.captionRefs[activeIndex].scrollIntoView({
+            behaviour: "smooth",
+            alignToTop: false
+          });
       }
     }
   };
 
   componentDidUpdate() {}
 
-  scrollToCaption = (caption, index) => async () => {
-    this.captionRefs[index].scrollIntoView(true);
+  scrollToCaption = async (caption, index) => {
+    this.captionRefs[index].scrollIntoView({
+      behaviour: "smooth",
+      alignToTop: false
+    });
     this.setState({
       activeIndex: index
     });
-    // await this.player.pauseVideo();
+    await this.player.pauseVideo();
     await this.player.seekTo(Math.ceil(caption.startTime / 1000), true);
+  };
+
+  claimToBSMapping = {
+    uncertain: "secondary",
+    truth: "success",
+    lie: "warning",
+    hate_speech: "danger",
+    exaggerated_promise: "info"
   };
 
   getColorFromClaims = (claims = []) => {
@@ -125,33 +139,31 @@ export class Video extends React.Component {
     let finalClaim = get(
       Object.entries(stats).find(([_, score]) => score === Math.max(...scores)),
       ["0"],
-      "none"
+      "uncertain"
     );
-    return get(colors, [finalClaim, "backgroundColor"], "black");
-    //   {
-    //     "claimCreatorUserName": "t@g.com",
-    //     "comment": "Test",
-    //     "downVoteCount": 0,
-    //     "motion": "truth",
-    //     "upVoteCount": 1,
-    //     "uuid": "b06832a8-cf30-11e8-b67d-9061ae80ca54"
-    // }
+    return {
+      bsClass: this.claimToBSMapping[finalClaim],
+      motion: finalClaim,
+      text: this.motionMapping[finalClaim]
+    };
   };
 
   motionMapping = {
     hate_speech: "Hate Speech",
     lie: "Lie",
     truth: "Truth",
-    exaggerated_promise: "Exaggerated Promise",
+    exaggerated_promise: "Exaggeration",
     uncertain: "Uncertain"
   };
 
   getDataPoints = captions => {
     let allCaptions = captions.length;
     let markedCaptions = captions.filter(caption => caption.claims.length > 0);
-    // let none = ((allCaptions - markedCaptions.length) / allCaptions) * 10;
-    let totalClaims = 0;
-    let stats = {};
+    let none = allCaptions - markedCaptions.length;
+    let totalClaims = allCaptions - markedCaptions.length;
+    let stats = {
+      uncertain: none
+    };
     markedCaptions.map(caption => caption.claims).forEach(claims => {
       totalClaims += claims.length;
       claims.forEach(claim => {
@@ -167,7 +179,7 @@ export class Video extends React.Component {
   render() {
     return (
       <Fragment>
-        <div className="mx-auto w-75">
+        <div className="mx-auto" style={{ width: "85%" }}>
           <div className="row">
             <div className="col-md-6" id="youtube-player" />
             <section
@@ -195,10 +207,9 @@ export class Video extends React.Component {
                                 animationEnabled: true,
                                 data: [
                                   {
-                                    type: "doughnut",
+                                    type: "pie",
                                     radius: "70%",
-                                    innerRadius: "60%",
-                                    indexLabel: "{name}",
+                                    indexLabel: "{name}: {y}",
                                     yValueFormatString: "#,###'%'",
                                     dataPoints: this.getDataPoints(
                                       this.state.captions
@@ -215,99 +226,21 @@ export class Video extends React.Component {
                       tabContent = this.state.captions.map((caption, index) => (
                         <Fragment key={caption.startIndex + "" + index}>
                           <State
-                            initial={{ showReply: false }}
+                            initial={{ showReply: false, showClaims: false }}
                             render={(state, setState) => (
                               <div
                                 ref={this.getCaptionsRef(index)}
                                 className="container"
                                 style={{
-                                  cursor: "pointer",
                                   padding: "10px"
                                 }}
                               >
-                                <div
-                                  className="row"
-                                  onClick={this.scrollToCaption(caption, index)}
-                                >
-                                  <i
-                                    className="far fa-arrow-alt-circle-right play-marker col-md-1"
-                                    style={{ paddingRight: "5px" }}
-                                  />
-                                  <span
-                                    className="col"
-                                    style={{
-                                      color: this.getColorFromClaims(
-                                        caption.claims
-                                      ),
-                                      fontWeight:
-                                        index === this.state.activeIndex
-                                          ? "bold"
-                                          : "normal"
-                                    }}
-                                  >
-                                    {caption.text}
-                                  </span>
-                                  {!state.showReply && (
-                                    <div
-                                      className="col-md-3"
-                                      style={{
-                                        display: "inline"
-                                      }}
-                                    >
-                                      <div
-                                        class="btn-group"
-                                        role="group"
-                                        aria-label="Basic example"
-                                      >
-                                        <button
-                                          type="button"
-                                          title="View claims"
-                                          class="btn btn-secondary"
-                                        >
-                                          <span class="badge badge-secondary">
-                                            {caption.claims.length}
-                                          </span>
-                                          <i className="far fa-comments" />
-                                        </button>
-                                        {caption.claims.filter(
-                                          claim =>
-                                            claim.claimCreatorUserName ===
-                                            "t@g.com"
-                                        ).length === 0 && (
-                                          <button
-                                            type="button"
-                                            title="Add Claim"
-                                            onClick={async _ => {
-                                              await this.player.pauseVideo();
-
-                                              this.captionRefs[
-                                                index
-                                              ].scrollIntoView(true);
-                                              this.setState({
-                                                activeIndex: index
-                                              });
-                                              await this.player.seekTo(
-                                                Math.ceil(
-                                                  caption.startTime / 1000
-                                                ),
-                                                true
-                                              );
-                                              setState({
-                                                showReply: !state.showReply
-                                              });
-                                            }}
-                                            class="btn btn-secondary"
-                                          >
-                                            <i className="fas fa-user-plus" />
-                                          </button>
-                                        )}
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                                {state.showReply && (
-                                  <div className="container d-inline">
+                                <Popover
+                                  isOpen={state.showReply}
+                                  tipSize={2}
+                                  body={
                                     <Claim
+                                      userName={this.props.userName}
                                       videoId={this.props.videoId}
                                       caption={caption}
                                       closeClaim={(reload = false) => {
@@ -319,12 +252,208 @@ export class Video extends React.Component {
                                         }
                                       }}
                                     />
+                                  }
+                                >
+                                  <div className="row">
+                                    <p
+                                      onClick={async _ => {
+                                        await this.scrollToCaption(
+                                          caption,
+                                          index
+                                        );
+                                        let claimDoesNotExist =
+                                          caption.claims.filter(
+                                            claim =>
+                                              claim.claimCreatorUserName ===
+                                              this.props.userName
+                                          ).length === 0;
+                                        if (
+                                          claimDoesNotExist &&
+                                          this.props.loggedIn
+                                        ) {
+                                          setState({
+                                            showReply: !state.showReply
+                                          });
+                                        }
+                                      }}
+                                      title={
+                                        this.props.loggedIn
+                                          ? "Click to add your claim"
+                                          : "Login to add your claim"
+                                      }
+                                      className="col-md-7 pr-0 claim-bucket"
+                                      style={{
+                                        fontWeight:
+                                          index === this.state.activeIndex
+                                            ? "bold"
+                                            : "normal",
+                                        fontSize:
+                                          index === this.state.activeIndex
+                                            ? "18px"
+                                            : "16px"
+                                      }}
+                                    >
+                                      {caption.text}
+                                    </p>
+                                    {!state.showReply &&
+                                      index === this.state.activeIndex && (
+                                        <div
+                                          className="col-md-4"
+                                          style={{
+                                            display: "inline"
+                                          }}
+                                        >
+                                          <Popover
+                                            isOpen={state.showClaims}
+                                            place="below"
+                                            onOuterAction={_ =>
+                                              setState({
+                                                showClaims: false
+                                              })
+                                            }
+                                            body={
+                                              <div
+                                                stye={{
+                                                  display: "flex",
+                                                  flex: "row wrap",
+                                                  border: "1px solid",
+                                                  padding: "10px"
+                                                }}
+                                              >
+                                                {caption.claims.map(claim => (
+                                                  <div
+                                                    class="card"
+                                                    key={claim.uuid}
+                                                  >
+                                                    <div class="card-body">
+                                                      <h5 class="card-title">
+                                                        Motion:{" "}
+                                                        {
+                                                          this.motionMapping[
+                                                            claim.motion
+                                                          ]
+                                                        }
+                                                      </h5>
+                                                      <h6 class="card-subtitle mb-2 text-muted">
+                                                        {
+                                                          claim.claimCreatorUserName
+                                                        }
+                                                      </h6>
+                                                      <p className="card-text">
+                                                        {claim.comment}
+                                                      </p>
+                                                      {this.props.loggedIn && (
+                                                        <div
+                                                          class="btn-group"
+                                                          role="group"
+                                                          aria-label="Basic example"
+                                                        >
+                                                          <button
+                                                            onClick={async () => {
+                                                              await api.postBody(
+                                                                "/api/claim/vote",
+                                                                {
+                                                                  url: `https://www.youtube.com/watch?v=${
+                                                                    this.props
+                                                                      .videoId
+                                                                  }`,
+                                                                  claimId:
+                                                                    claim.uuid,
+                                                                  vote: "upvote"
+                                                                }
+                                                              );
+                                                              await this.fetchCaptions();
+                                                            }}
+                                                            className="btn btn-outline-success"
+                                                          >
+                                                            Support
+                                                            <span className="px-2 badge badge-pill badge-light">
+                                                              {
+                                                                claim.upVoteCount
+                                                              }
+                                                            </span>
+                                                          </button>
+                                                          <button
+                                                            onClick={async () => {
+                                                              await api.postBody(
+                                                                "/api/claim/vote",
+                                                                {
+                                                                  url: `https://www.youtube.com/watch?v=${
+                                                                    this.props
+                                                                      .videoId
+                                                                  }`,
+                                                                  claimId:
+                                                                    claim.uuid,
+                                                                  vote:
+                                                                    "downvote"
+                                                                }
+                                                              );
+                                                              await this.fetchCaptions();
+                                                            }}
+                                                            className="btn btn-outline-danger"
+                                                          >
+                                                            Refute
+                                                            <span className="px-2 badge badge-pill badge-light">
+                                                              {
+                                                                claim.downVoteCount
+                                                              }
+                                                            </span>
+                                                          </button>
+                                                        </div>
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                ))}
+                                              </div>
+                                            }
+                                          >
+                                            <div
+                                              class="btn-group"
+                                              role="group"
+                                              aria-label="Basic example"
+                                            >
+                                              <button
+                                                className={`btn btn-${
+                                                  this.getColorFromClaims(
+                                                    caption.claims
+                                                  ).bsClass
+                                                }`}
+                                              >
+                                                {
+                                                  this.getColorFromClaims(
+                                                    caption.claims
+                                                  ).text
+                                                }
+                                              </button>
+                                              <button
+                                                type="button"
+                                                onClick={_ => {
+                                                  let show =
+                                                    caption.claims.length > 0;
+                                                  setState({
+                                                    showClaims: show
+                                                  });
+                                                  if (show) {
+                                                    this.player.pauseVideo();
+                                                  }
+                                                }}
+                                                title="View claims"
+                                                className={`btn btn-secondary`}
+                                              >
+                                                <span class="badge badge-secondary">
+                                                  {caption.claims.length}
+                                                </span>
+                                                <i className="far fa-comments" />
+                                              </button>
+                                            </div>
+                                          </Popover>
+                                        </div>
+                                      )}
                                   </div>
-                                )}
+                                </Popover>
                               </div>
                             )}
                           />
-                          <br />
                         </Fragment>
                       ));
                       break;
@@ -335,9 +464,7 @@ export class Video extends React.Component {
                     <Fragment>
                       <ul
                         className="nav nav-tabs"
-                        style={{
-                          position: "sticky"
-                        }}
+                        style={{ backgroundColor: "white" }}
                       >
                         <li class="nav-item">
                           <a
@@ -350,7 +477,7 @@ export class Video extends React.Component {
                               this.player.playVideo();
                             }}
                           >
-                            Captions
+                            Transcript
                           </a>
                         </li>
                         <li class="nav-item">
@@ -364,7 +491,7 @@ export class Video extends React.Component {
                               this.player.pauseVideo();
                             }}
                           >
-                            Stats
+                            Video analysis
                           </a>
                         </li>
                       </ul>
@@ -381,13 +508,13 @@ export class Video extends React.Component {
             </section>
           </div>
         </div>
-        <div
+        {/* <div
           className="d-flex p-0 w-75 mx-auto"
           style={{ borderRadius: "2px", border: "1px solid", height: "15px" }}
         >
           <span style={{ width: "60%", backgroundColor: "#701516" }} />
           <span style={{ width: "40%", backgroundColor: "#555555" }} />
-        </div>
+        </div> */}
       </Fragment>
     );
   }

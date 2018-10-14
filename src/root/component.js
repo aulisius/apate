@@ -1,12 +1,8 @@
+import api from "api";
+import { Field, Form, Formik } from "formik";
 import React, { Component, Fragment } from "react";
-import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
 import { actions } from "./ducks";
-import api from "api";
-import "./styles.scss";
-// import { InlineNotification } from "./inline-notif";
-// import { onSuccess, onFailure } from "@faizaanceg/redux-side-effect";
-
 import "./styles.scss";
 
 class Root extends Component {

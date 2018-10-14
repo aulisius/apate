@@ -176,7 +176,7 @@ h4 {
 }
 
 .main {
-  background: #f4f5fc;
+  background: #fff;
 }
 
 .main header {
@@ -244,6 +244,10 @@ h4 {
 .main .hero .hero-buttons .btn:hover .fa-arrow-right {
   -webkit-animation: move-arrow 1000ms ease-in-out infinite;
   animation: move-arrow 1000ms ease-in-out infinite;
+}
+
+* {
+  font-family: "Open Sans";
 }
 
 .footer .container {
@@ -385,5 +389,18 @@ h4 {
   .search-box .search-btn:hover {
     color: #fff;
     background-color: #8fbe00;
+  }
+}
+
+.Popover-body {
+  background-color: white;
+  border: 1px solid;
+  padding: 20px;
+}
+
+.claim-bucket {
+  &:hover {
+    cursor: pointer;
+    color: blue;
   }
 }
